@@ -1,3 +1,9 @@
+use std::env::args;
+
+mod parser;
+
 fn main() {
-    println!("Hello, world!");
+
+
+    let args: Vec<String> = args().collect();
 }
