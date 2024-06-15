@@ -1,6 +1,8 @@
-use std::{env::args, path::Path};
-
+use chrono::Local;
 use clap::{arg, ArgAction, Parser};
+use filetime::FileTime;
+use regex::Regex;
+use std::{path::Path, process, time::SystemTime};
 
 #[derive(Parser, Debug)]
 #[command(
@@ -25,15 +27,45 @@ struct Command {
 }
 
 fn main() {
+    // Parse command line arguments with the pattt
     let args: Command = Command::parse();
 
+    // Check if file paths exists in the arguments
     if args.file_paths.len() == 0 {
         eprintln!("No filename(s) specified");
-        std::process::exit(1);
+        process::exit(1);
     }
 
-    for path in &args.file_paths {
-        let path = Path::new(path);
-        if !path.exists() {}
+    // Regex for Windows filenames
+    let pattern: Regex = Regex::new(r#"""^(?!^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$)([^\\/:*?"<>|][^\\/:*?"<>|]{0,254}[^\\/:*?"<>|.\s])$"#).unwrap();
+
+    // Iterate through file paths
+    for file_path in &args.file_paths {
+        // Check if file path matches Windows file naming rules
+        if !pattern.is_match(&file_path) {
+            eprintln!("The filename, directory name, or volume label syntax is incorrect.");
+            process::exit(1);
+        }
+
+        // Create a Path object for file system operations
+        let path: &Path = Path::new(file_path);
+
+        // Check if the path already exists
+        if path.exists() {
+            eprintln!("A file {file_path} already exists");
+            process::exit(1);
+        }
+
+        match args.date {
+            Some(date) => { 
+                let datetime: chrono::DateTime<chrono::Utc> = dateparser::parse_with_timezone(&date, &Local).unwrap_or_else(|_| {
+                    eprintln!("The time format is incorrect");
+                    process::exit(1);
+                });
+            }
+            None => { 
+                let time_now: FileTime = FileTime::from_system_time(SystemTime::now())
+            }
+        }
     }
 }
