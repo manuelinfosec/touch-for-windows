@@ -7,7 +7,7 @@ use std::{fs::File, path::Path, process, time::SystemTime};
 #[derive(Parser, Debug)]
 #[command(
     version,
-    about = "touch - change file timestamps\n\nUpdate the access and modification times of each FILE to the current time.\nA FILE argument that does not exist is created empty, unless -c is supplied.\nMandatory arguments to long options are mandatory for short options too."
+    about = "A command-line tool to change file timestamps.\n\nThis tool updates the access and modification times of specified files to the current time or a specified time.\nIf a specified file does not exist, it is created empty unless the -c option is provided.\nMandatory arguments for long options are also mandatory for short options."
 )]
 struct Command {
     // Flag to indicate changing the file access time
