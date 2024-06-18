@@ -32,8 +32,8 @@ jobs:
 
       - name: Build and test
         run: |
-          cargo build --verbose
-          cargo test --verbose
+          cargo build --verbose --release
+          cargo test --verbose --release
 
   publish:
     name: Publish to crates.io
