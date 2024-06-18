@@ -41,7 +41,7 @@ fn main() {
     }
 
     // Regex pattern to validate Windows file naming rules
-    let pattern: Regex = Regex::new(r#"^(?!^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$)([^\\/:*?"<>|][^\\/:*?"<>|]{0,254}[^\\/:*?"<>|.\s])$"#).unwrap();
+    let pattern: Regex = Regex::new(r#"^[^\\/:*?"<>|]{1,255}$"#).unwrap();
 
     // Iterate over each file path provided
     for file_path in &args.file_paths {
