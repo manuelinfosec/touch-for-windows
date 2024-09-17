@@ -1,5 +1,5 @@
 [package]
-name = "touch-for-windows"
+name = "touch"
 version = "0.1.0"
 edition = "2021"
 description = "A command-line tool to change file timestamps on Windows."
@@ -20,6 +20,7 @@ filetime = "0.2.19"
 [dev-dependencies]
 assert_cmd = "2.0.8"
 tempfile = "3.2.0"
+rand = "0.8.5"
 
 [[bin]]
 name = "touch"

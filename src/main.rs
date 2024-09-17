@@ -69,6 +69,7 @@ fn main() {
 
         // Determine the datetime to use for file timestamps
         let datetime: FileTime = if let Some(date) = &args.date {
+            println!("{date}!!!!!!!!!");
             // Parse the date string into a chrono DateTime object
             let datetime: chrono::DateTime<chrono::Utc> =
                 dateparser::parse_with_timezone(&date, &Local)
@@ -82,8 +83,11 @@ fn main() {
         }
         // If no date is supplied, use the current system time
         else {
+            println!("No date is suppolied");
             FileTime::from_system_time(SystemTime::now())
         };
+
+        print!("{datetime:?}");
 
         // If the access flag is set, update the file's access time
         if args.access {
