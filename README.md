@@ -23,7 +23,7 @@ For developers:
 | `-a`              | change only the access time of a file                                                                                                                 |
 | `-d`, `--date`    | specifies the date to use when changing access and/or modification/write time |                                           |
 | `-m`              | change only the modification/write time of a file                                                                                                     |
-| `-v`, `--version` | output version information and exit                                                                                                                   |
+| `-a`              | change only the access time of a file                                                                                                     |
 | `--help`          | display help page                                                                                                                                     |
 
 
