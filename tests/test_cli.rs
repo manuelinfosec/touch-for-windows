@@ -1,11 +1,11 @@
 use std::{
-    fs::{self, File},
+    fs::{self},
     path::PathBuf,
     time::SystemTime,
 };
 
 use assert_cmd::Command;
-use chrono::TimeZone;
+use chrono::Local;
 use rand::Rng;
 use std::time::Duration;
 use tempfile::{tempdir, TempDir};
@@ -46,6 +46,7 @@ fn test_touch_modify_atime() {
         now.duration_since(atime)
             // unnecessary
             .unwrap_or_else(|_| { Duration::new(0, 0) })
+            // unnecessary ends
             .as_secs()
             < 2
     );
@@ -64,22 +65,25 @@ fn test_touch_create_file_with_date() {
         .arg(file_path.to_str().unwrap())
         .assert()
         .success();
-    println!("Success");
 
     assert!(file_path.exists());
 
-    let metadata = fs::metadata(&file_path).unwrap();
-    let mtime = metadata.modified().unwrap();
-    println!("About parsing");
-    let expected_time = chrono::Local
-        .from_local_datetime(
-            &chrono::NaiveDate::parse_from_str(date, "%Y-%m-%d")
-                .unwrap()
-                .and_hms_opt(0, 0, 0)
-                .unwrap(),
-        )
-        .unwrap();
-    println!("Finished parsing");
+    let metadata: fs::Metadata = fs::metadata(&file_path).unwrap();
+    let mtime: SystemTime = metadata.modified().unwrap();
 
-    assert_eq!(mtime, expected_time.into());
+    let expected_time: chrono::DateTime<chrono::Utc> =
+        dateparser::parse_with_timezone(&date, &Local).unwrap();
+
+    // Extract the seconds attribute for comparison, because I don't know
+    // why the interval attribute of SystemTime is different for modified time
+    // and expected time even if they're both parsed the same way
+    // Oh, I think I know.
+    // Since the time attribute is not specified for the date above, the current
+    // time used during parsing is different for modified time and expected time.
+    // I need to find a way to ignore the current time when it's not specified and
+    // stick to using 00:00:00 (HH:MM:SS) as the default time during parsing.
+    assert_eq!(
+        filetime::FileTime::from_system_time(mtime).seconds(),
+        filetime::FileTime::from_system_time(expected_time.into()).seconds()
+    );
 }

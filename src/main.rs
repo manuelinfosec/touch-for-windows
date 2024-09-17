@@ -69,7 +69,6 @@ fn main() {
 
         // Determine the datetime to use for file timestamps
         let datetime: FileTime = if let Some(date) = &args.date {
-            println!("{date}!!!!!!!!!");
             // Parse the date string into a chrono DateTime object
             let datetime: chrono::DateTime<chrono::Utc> =
                 dateparser::parse_with_timezone(&date, &Local)
@@ -99,6 +98,16 @@ fn main() {
 
         // If the modify flag is set, update the file's modification time
         if args.modify {
+            set_file_mtime(path, datetime).unwrap_or_else(|_| {
+                eprintln!("Cannot set last modify time");
+                process::exit(1);
+            });
+        }
+
+        // If the date is set and neither the modify nor access
+        if args.date.is_some() && !args.modify && !args.access {
+            // Set only the last modified time
+            println!("Setting last modify time");
             set_file_mtime(path, datetime).unwrap_or_else(|_| {
                 eprintln!("Cannot set last modify time");
                 process::exit(1);
