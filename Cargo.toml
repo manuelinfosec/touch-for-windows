@@ -9,7 +9,7 @@ documentation = "https://github.com/manuelinfosec/touch-for-windows#readme"
 homepage = "https://github.com/manuelinfosec/touch-for-windows"
 repository = "https://github.com/manuelinfosec/touch-for-windows"
 
-exclude = [".github/*"]
+exclude = [".github/*", "tests/*", ".gitignore"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
