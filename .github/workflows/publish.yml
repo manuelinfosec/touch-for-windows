@@ -62,5 +62,5 @@ jobs:
 
       - name: Package and publish
         run: |
-          cargo package --allow-dirty
+          cargo package
           cargo publish
